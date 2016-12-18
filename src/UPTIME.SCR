@@ -1,0 +1,263 @@
+:userdoc.
+:docprof toc=12.
+:title.Uptime monitor
+
+.imd miscdefs.h
+.imd helpdefs.h
+
+.***********************************************************************
+.*	General help
+.***********************************************************************
+
+:h1 res=&HLP_GENERAL..General help
+:i1.General help
+:artwork name='uptime.bmp' align=center.
+:font facename=Helv size=24x16.:hp8.
+.ce The &osq.uptime&csq. class
+:ehp8.:font facename=default.
+:p.Workplace Shell objects of the :hp8.uptime:ehp8.
+class are used to monitor system uptime (time since the last system boot).
+They give a visual indication of the current system uptime
+by altering the object title text.
+:p.When the object is closed,
+it is inactive and the system uptime is not monitored at all.
+:p.When the object is opened in its :hp2.Watch:ehp2. view (its only view apart
+from :hp2.Properties:ehp2.), it monitors the system uptime, refreshing the display at
+regular intervals.
+:p.There are various ways of determining the system uptime; all have their
+own advantages and disadvantages, so the user can select one of three possible
+methods according to their own preference. See under
+:link reftype=hd res=&HLP_OPTIONS..Options properties:elink. for more details.
+:p.Related Information&colon.:lm margin=5.
+:p.
+&sqbul. :link reftype=hd res=&HLP_OPTIONS..Options properties:elink.
+.br
+&sqbul. :link reftype=hd res=&HLP_CLOSEVIEW..Close view menu item:elink.
+.br
+&sqbul. :link reftype=hd res=&HLP_ABOUT..About menu item:elink.
+.br
+&sqbul. :link reftype=hd res=&HLP_WATCH..Watch view:elink.
+.br
+&sqbul. :link reftype=hd res=&HLP_SETUP..Object setup strings:elink.
+.br
+&sqbul. :link reftype=hd res=&HLP_DRIVER..The UPTIME device driver:elink.
+:lm margin=1.
+:p.The author of the :hp2.uptime:ehp2. class
+is :link reftype=hd  res=&HLP_AUTHOR..Bob Eager:elink..
+
+
+:h1 res=&HLP_AUTHOR..The author
+:i1.Author
+:p.The :hp2.uptime:ehp2. class was implemented by Bob Eager.
+:p.To contact him, try one of the following:
+:dl tsize=12 break=fit.
+:dt.E-mail
+:dd.rde@tavi.co.uk
+.br
+bob@eager.cx
+:dt.Phone
+:dd.+44 1227 367270
+:dt.Mail
+:dd.Robert D Eager
+.br
+Tavi Systems
+.br
+PO Box 117
+.br
+Herne Bay
+.br
+Kent
+.br
+CT6 8GL
+.br
+United Kingdom
+:edl.
+
+
+.***********************************************************************
+.*	Options properties page help
+.***********************************************************************
+
+:h1 res=&HLP_OPTIONS..Options properties
+:i1.Options properties
+:p.This page is used to specify user options for an object in the
+:hp2.uptime:ehp2. class.
+:p.Related Information&colon.:lm margin=5.
+:p.
+&sqbul. :link reftype=hd res=&HLP_OPTIONS_REFRESH..Refresh interval:elink.
+.br
+&sqbul. :link reftype=hd res=&HLP_OPTIONS_METHOD..Uptime method:elink.
+:lm margin=1.
+
+.***********************************************************************
+.*	Options properties page help - refresh interval
+.***********************************************************************
+
+:h1 res=&HLP_OPTIONS_REFRESH..Options properties - refresh interval
+:i1.Options properties - refresh interval
+:p.The :hp2.Refresh interval:ehp2. is specified in seconds,
+and specifies the interval between successive updates of the uptime display.
+The minimum refresh interval is &MIN_REFRESH_INTERVAL. seconds, and the
+maximum refresh interval is &MAX_REFRESH_INTERVAL. seconds; the default setting
+is &DEFAULT_REFRESH_INTERVAL. seconds.
+:note.
+A change in refresh interval while the object is open will take effect only
+after the current interval has expired.
+:warning.
+Low values for the refresh interval may result in performance degradation.
+
+
+.***********************************************************************
+.*	Options properties page help - uptime method
+.***********************************************************************
+
+:h1 res=&HLP_OPTIONS_METHOD..Options properties - uptime method
+:i1.Options properties - uptime method
+:p.This set of radio buttons allows the selection of one of three methods
+for determining the system uptime. The differing nature of these methods
+means that there may be differences (of up to a few seconds) between the results
+returned by different methods.
+:p.A change in uptime method while the object is open will take effect as soon
+as the current refresh interval has expired.
+:dl break=all.
+:dt.Swapfile date and time.
+:dd.The uptime is calculated as an offset from the last time the system swapfile
+was created or truncated. This method is acceptable, but will not work if there
+is no :hp2.SWAPPATH:ehp2. statement in :hp2.CONFIG.SYS:ehp2.. It will of course
+malfunction if this statement is changed after the system is booted.
+:dt.High resolution timer.
+:dd.The uptime is calculated using the system&apos.s own internal high
+resolution timer. This method is accurate, but will fail after approximately
+49 days, when the system timer wraps round.
+:dt.Device driver.
+:dd.The uptime is calculated as an offset from the time recorded at boot
+by a special device driver,
+:link reftype=hd res=&HLP_DRIVER..UPTIME.SYS:elink.. This is the most accurate
+and reliable method, but does require the presence of the (very small)
+device driver.
+:edl.
+:note.
+There is negligible performance impact, regardless of the method used.
+:warning.
+If a particular method fails, it does so relatively silently. 
+The problem is signalled as a change in the displayed uptime, to the string
+:hp8.<unknown>:ehp8.. 
+
+
+.***********************************************************************
+.*	Device driver help
+.***********************************************************************
+
+:h1 res=&HLP_DRIVER..The UPTIME device driver
+:i1.The UPTIME device driver
+:p.The device driver is only required if the relevant method is chosen.
+The file is called :hp2.UPTIME.SYS:ehp2., and can be placed in any convenient
+directory. The following statement should be added in :hp2.CONFIG.SYS:ehp2.;
+its location is not important&colon.
+:xmp.
+DEVICE=UPTIME.SYS
+:exmp.
+:p.No parameters or options are accepted after the driver name.
+:p.The driver is extremely small.
+:p.Related Information&colon.:lm margin=5.
+:p.
+&sqbul. :link reftype=hd res=&HLP_DRIVER_PROG..Driver programming information:elink.
+:lm margin=1.
+
+
+.***********************************************************************
+.*	Device driver programming information
+.***********************************************************************
+
+:h1 res=&HLP_DRIVER_PROG..Device driver programming information
+:i1.Device driver programming information
+:p.The device driver can, if so desired, be used in isolation.
+It provides
+a device named UPTIME$, which can be opened in the usual way (the same
+as a file) in any suitable programming language.  Once this is done, a
+read operation will return four bytes which make up a 32 bit value
+(least significant byte first).  This value is the system uptime in
+seconds (more accurately, it is the time since the device driver
+initialised). 
+
+
+.***********************************************************************
+.*	Menu help
+.***********************************************************************
+
+:h1 res=&HLP_WATCH..Watch view
+:i1.Watch view
+:p.An object in the :hp2.uptime:ehp2. class has only one kind of open view;
+this is the Watch view. The view can be opened by double clicking on
+the object, by selecting the Open item on the object&apos.s Open menu,
+or by selecting the Watch option on that Open menu.
+:p.When the Watch view is opened, the object will monitor the
+system uptime.
+:p.Note that, for reasons connected with the WPS, a basic dialog box has
+to be opened while the Watch view is open. This dialog box is normally hidden,
+but will appear if the Watch view is selected from the Window List.
+To hide it again, simply press the Minimize button.
+
+
+:h1 res=&HLP_CLOSEVIEW..Close view
+:i1.Close view menu item
+:p.This menu item is used to close an open Watch view. When the view is
+closed, all monitoring stops and the title text is set back to its normal
+value.
+
+:h1 res=&HLP_ABOUT..About
+:i1.About menu item
+:p.This menu item displays product and author information.
+
+
+.***********************************************************************
+.*	Setup keyword help
+.***********************************************************************
+
+:h1 res=&HLP_SETUP..Object setup strings
+:i1.Setup strings
+:i1.Object setup strings
+:p.Objects of the :hp2.uptime:ehp2. class accept the following keywords
+in their setup strings at creation time, plus all keywords accepted
+by objects of the :hp2.WPAbstract:ehp2. class&colon.:lm margin=5.
+:p.
+&sqbul. :link reftype=hd res=&HLP_K_REFRESH_INTERVAL..REFRESH_INTERVAL (refresh interval):elink.
+.br
+&sqbul. :link reftype=hd res=&HLP_K_UPTIME_METHOD..UPTIME_METHOD (uptime dtermination method):elink.
+:lm margin=1.
+
+:h1 res=&HLP_K_REFRESH_INTERVAL..REFRESH_INTERVAL setup keyword
+:i1.REFRESH_INTERVAL setup keyword
+:p.This keyword is used to specify the refresh interval, in seconds, if
+automatic refresh is enabled.
+:p.The parameter must be a number between
+&MIN_REFRESH_INTERVAL. and &MAX_REFRESH_INTERVAL..
+:p.The default value is &DEFAULT_REFRESH_INTERVAL..
+:warning.
+Low values for this setting may result in performance degradation.
+:ewarning.
+:p.Example&colon.
+:xmp.
+REFRESH_INTERVAL=60
+:exmp.
+
+:h1 res=&HLP_K_UPTIME_METHOD..UPTIME_METHOD setup keyword
+:i1.UPTIME_METHOD setup keyword
+:p.This keyword is used to specify the method of obtaining the system uptime.
+:p.The parameter must be one of the following self-explanatory keywords&colon.
+.br
+.br
+:lm margin=5.
+:hp2.SWAPFILE:ehp2., :hp2.TIMER:ehp2., :hp2.DRIVER:ehp2..
+:lm margin=1.
+:p.The default value is :hp2.TIMER:ehp2.. Only the first character of the
+keyword need be given, although any subsequent characters are checked for
+correctness.
+:p.Example&colon.
+:xmp.
+UPTIME_METHOD=DRIVER
+:exmp.
+
+
+:euserdoc.
+

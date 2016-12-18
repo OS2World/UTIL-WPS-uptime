@@ -1,0 +1,2 @@
+Reset title text on close
+Fix message passing/updated params

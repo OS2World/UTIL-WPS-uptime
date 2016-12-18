@@ -1,0 +1,7 @@
+LIBRARY		UPTIME
+DESCRIPTION	'$@#Bob Eager:1.3#@Uptime device driver'
+PROTMODE
+SEGMENTS
+		_DATA CLASS 'DATA'
+		_TEXT CLASS 'CODE'
+

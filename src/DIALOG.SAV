@@ -1,0 +1,50 @@
+#ifndef OS2_INCLUDED
+   #include <os2.h>
+#endif
+DLGINCLUDE 1 "DIALOG.H"
+
+DLGTEMPLATE DLG_ABOUT LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Product Information", DLG_ABOUT, 119, 83, 158, 88, WS_VISIBLE, 
+            FCF_TITLEBAR
+    BEGIN
+        ICON            DID_OK, DLG_ABOUT_ICON, 70, 68, 18, 15, WS_GROUP
+        CTEXT           "", DLG_ABOUT_TEXT, 27, 25, 105, 40, DT_WORDBREAK
+        PUSHBUTTON      "OK", DLG_ABOUT_OK, 59, 6, 40, 14
+    END
+END
+
+DLGTEMPLATE DLG_WATCH LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Watch Dialog", DLG_WATCH, 133, 138, 140, 44, , FCF_SYSMENU | 
+            FCF_TITLEBAR | FCF_MINBUTTON
+    BEGIN
+        CTEXT           "System Uptime Monitor", DLG_WATCHTEXT, 20, 19, 100, 
+                        8, DT_VCENTER
+    END
+END
+
+DLGTEMPLATE DLG_OPTIONS LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "", DLG_OPTIONS, 90, 50, 200, 125, NOT FS_DLGBORDER | WS_VISIBLE
+    BEGIN
+        GROUPBOX        "Refresh", DLG_REFRESHGRP, 11, 98, 176, 27
+        LTEXT           "Refresh interval:", DLG_INTERVALTXT, 25, 105, 80, 8, 
+                        NOT WS_GROUP
+        SPINBUTTON      DLG_INTERVAL, 102, 105, 40, 12, SPBS_NUMERICONLY | 
+                        SPBS_MASTER
+        LTEXT           "secs", DLG_SECSTXT, 146, 105, 20, 8, NOT WS_GROUP
+        PUSHBUTTON      "~Undo",DLG_OPTIONS_UNDO, 0, 0, 40, 14, BS_NOTEBOOKBUTTON
+        PUSHBUTTON      "~Default",DLG_OPTIONS_DEFAULT, 78, 0, 40, 
+                        14, BS_NOTEBOOKBUTTON
+        PUSHBUTTON      "Help",DLG_OPTIONS_HELP, 160, 0, 40, 14, 
+                        BS_HELP | BS_NOPOINTERFOCUS | BS_NOTEBOOKBUTTON
+        GROUPBOX        "Method", DLG_METHOD, 11, 24, 176, 65
+        AUTORADIOBUTTON "Swapfile date and time", DLG_METHOD_SWAPFILE, 44, 
+                        65, 135, 10, WS_GROUP | WS_TABSTOP
+        AUTORADIOBUTTON "High resolution timer", DLG_METHOD_TIMER, 44, 50, 
+                        135, 10, WS_TABSTOP
+        AUTORADIOBUTTON "Device driver", DLG_METHOD_DRIVER, 44, 35, 135, 10, 
+                        WS_TABSTOP
+    END
+END

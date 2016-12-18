@@ -1,0 +1,224 @@
+#
+# Makefile for 'uptime' WPS class
+#
+# Bob Eager   October 2004
+#
+# Product name
+#
+PRODUCT		= uptime
+#
+# Target directories
+#
+TARGETDLL	= f:\otherdll
+TARGETHLP	= f:\help
+TARGETSYS	= f:\binp
+#
+# Final executable files
+#
+DLL		= $(PRODUCT).dll
+SYS		= $(PRODUCT).sys
+#
+# Compiler setup
+#
+AS		= alp
+CC		= icc
+MASM		= masm
+!IFDEF DEBUG
+DBUG		= -DDEBUG
+!ELSE
+DBUG		=
+!ENDIF
+AFLAGS		= -Fl+ -Lm+ -Lr- -Ls+ -Mb-
+!IFDEF	PROD
+CFLAGS		= $(DBUG) -Fi -G4 -Gm -O -Q -Ss -Se -Si
+!ELSE
+CFLAGS		= $(DBUG) -Fi -G4 -Gm -Q -Se -Ss -Si -Ti -Tm -Tx
+!ENDIF
+MFLAGS		= /n /p /t /w2
+#
+# Names of library files
+#
+LIBS		= somtk.lib
+#
+# Names of object files
+#
+!IFDEF	DEBUG
+OBJ		= uptime.obj pagedlg.obj client.obj dbldiv.obj logd.obj
+!ELSE
+OBJ		= uptime.obj pagedlg.obj client.obj dbldiv.obj
+!ENDIF
+OBJD		= uptimed.obj
+#
+# Other files
+#
+ARCH		= arch.zip
+CMD		= reg.cmd dereg.cmd create.cmd
+DEF		= $(PRODUCT).def
+DEFD		= $(PRODUCT)d.def
+DIST		= dist.zip
+DOC		= $(PRODUCT).doc
+HLP		= $(PRODUCT).hlp
+IPF		= $(PRODUCT).ipf
+LNK		= $(PRODUCT).lnk
+LNKD		= $(PRODUCT)d.lnk
+LSTD		= $(PRODUCT)d.lst
+MAPD		= $(PRODUCT)d.map
+RC		= $(PRODUCT).rc
+RES		= $(PRODUCT).res
+SCR		= $(PRODUCT).scr
+TMPC		= c.tmp
+TMPIH		= ih.tmp
+TMPDLG		= dlg.tmp
+TMPDEF		= def.tmp
+#
+XDLL		= $(TARGETDLL)\$(DLL)
+XHLP		= $(TARGETHLP)\$(HLP)
+XSYS		= $(TARGETSYS)\$(SYS)
+#
+#-----------------------------------------------------------------------------
+#
+install:	$(XDLL) $(XHLP) $(XSYS)
+#
+$(XDLL):	$(DLL)
+		-@copy $(DLL) $(XDLL)
+#
+$(XHLP):	$(HLP)
+		-@copy $(HLP) $(XHLP)
+#
+$(XSYS):	$(SYS)
+		-@copy $(SYS) $(XSYS)
+#
+all:		$(DLL) $(HLP) $(SYS)
+#
+$(DLL):		$(OBJ) $(LNK) $(RES) $(DEF)
+!IFDEF	PROD
+		ilink /nologo /exepack:2 @$(LNK)
+!ELSE
+		ilink /debug /nobrowse /nologo @$(LNK)
+!ENDIF
+		rc -n -w2 -x2 $(RES) $(DLL)
+#
+$(SYS):		$(OBJD) $(DEFD) $(LNKD)
+		link /batch @$(LNKD)
+#
+$(LNKD):	makefile
+		echo $(OBJD)    > $(LNKD)
+		echo $(SYS)    >> $(LNKD)
+		echo $(MAPD)/map   >> $(LNKD)
+		echo os2286    >> $(LNKD)
+		echo $(DEFD)   >> $(LNKD)
+#
+$(OBJD):	$(PRODUCT).asm
+		masm $(MFLAGS) $(PRODUCT),$(OBJD),$(LSTD);
+#
+# Object files
+#
+uptime.obj:	uptime.c uptime.h uptime.ih uptime.mrk\
+		resource.h\
+		dialog.h\
+		key.h\
+		helpdefs.h\
+		common.h\
+		miscdefs.h
+		$(CC) $(CFLAGS) -Ge- -c $*.c
+#
+pagedlg.obj:	pagedlg.c uptime.h uptime.ih\
+		dialog.h\
+		common.h\
+		miscdefs.h
+		$(CC) $(CFLAGS) -Ge- -c $*.c
+#
+client.obj:	client.c uptime.h uptime.ih\
+		common.h\
+!IFDEF	DEBUG
+		logd.h\
+!ENDIF
+		miscdefs.h
+		$(CC) $(CFLAGS) -Ge- -c $*.c
+#
+dbldiv.obj:	dbldiv.asm
+		$(AS) $(AFLAGS) $*
+#
+#
+!IFDEF	DEBUG
+logd.obj:	logd.c logd.h
+		$(CC) $(CFLAGS) -Ge- -c $*.c
+!ENDIF
+#
+# Source files
+#
+uptime.mrk:	uptime.idl
+		copy uptime.c uptime.csv
+		sc -sc uptime.idl
+		ml1 fixc.ml1 uptime.c -o $(TMPC)
+		mv $(TMPC) uptime.c
+		touch -c uptime.mrk
+#
+uptime.h:	uptime.idl
+		sc -sh uptime.idl
+#
+uptime.ih:	uptime.idl
+		sc -sih uptime.idl
+		ml1 pragfix.ml1 uptime.ih -o $(TMPIH)
+		mv $(TMPIH) uptime.ih
+#
+# Resource files
+#
+$(RES):		$(RC)\
+		resource.h\
+		dialog.dlg\
+		dialog.h\
+		uptime.ico
+		copy dialog.dlg dialog.sav
+		ml1 rcfix.ml1 dialog.dlg -o $(TMPDLG)
+		mv $(TMPDLG) dialog.dlg
+		rc -n -r -w2 $(RC)
+#
+# Linker definition files
+#
+$(DEF):		uptime.idl makefile
+		sc -sdef uptime.idl
+		ml1 deffix.ml1 $(DEF) -o $(TMPDEF)
+		mv $(TMPDEF) $(DEF)
+		@type >> $(DEF) <<
+SEGMENTS
+	a_dlg_seg
+	a_init_seg
+<<NOKEEP
+#
+# Linker response files. Rebuild if makefile changes
+#
+$(LNK):		makefile
+		@if exist $(LNK) erase $(LNK)
+		@echo /map:$(PRODUCT) >> $(LNK)
+		@echo /out:$(PRODUCT) >> $(LNK)
+		@echo $(OBJ) >> $(LNK)
+		@echo $(LIBS) >> $(LNK)
+		@echo $(DEF) >> $(LNK)
+#
+# Help
+#
+$(HLP):		$(IPF)\
+		uptime.bmp
+		ipfc -s $(IPF)
+#
+$(IPF):         $(SCR)\
+		helpdefs.h
+		ipfcprep $(SCR) $(IPF) -l -q
+#
+clean:		
+		-erase /n $(OBJ) $(OBJD) logd.obj \
+		$(LNK) $(RES) $(IPF) *.map *.pch *.lst *.csv
+#
+dist:		$(DLL) $(SYS) $(HLP) $(DOC) $(CMD)
+		zip -9 -j $(DIST) $**
+#
+arch:		$(DLL) $(SYS) $(HLP) $(DOC) $(CMD) \
+		$(DEF) $(DEFD) $(SCR) $(RC) $(RES) *.ico *.bmp \
+		*.c *.h *.ih *.dlg *.asm *.mrk *.idl *.ml1 \
+		makefile
+		zip -9 -j $(ARCH) $**
+#
+# End of makefile for 'uptime' WPS class
+#
+

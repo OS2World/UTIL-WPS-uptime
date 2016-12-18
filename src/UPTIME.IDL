@@ -1,0 +1,94 @@
+//#
+//# File: uptime.idl
+//#
+//# Class for Workplace Shell uptime monitor
+//#
+//# Bob Eager   October 2004
+//#
+
+#include <wpabs.idl>	//# Get parent class definition
+
+//#
+//# This class of WPS objects monitors system uptime.
+//#
+//#
+
+//#
+//# For more details of new and overridden methods, see the actual
+//# method code.
+//#
+
+/*
+ * First, the metaclass.
+ *
+ */
+
+interface M_uptime : M_WPAbstract
+{
+	HMODULE clsQueryModuleHandle();
+
+	#ifdef __SOMIDL__
+	implementation
+	{
+		releaseorder : clsQueryModuleHandle;
+
+		majorversion = 1;
+		minorversion = 3;
+
+		wpclsQueryDefaultHelp		: override;
+		wpclsQueryDefaultView		: override;
+		wpclsQueryIconData		: override;
+		wpclsQueryTitle			: override;
+	};
+	#endif
+};
+
+/*
+ * Now the actual class.
+ *
+ */
+
+interface uptime : WPAbstract
+{
+	attribute long refreshinterval;
+	attribute long method;
+
+	ULONG wpAddOptionsPage(in HWND hwndNoteBook);
+
+	#ifdef	__SOMIDL__
+	implementation
+	{
+		long dlginfo;
+
+		releaseorder :	wpAddOptionsPage,
+				_get_refreshinterval,
+				_set_refreshinterval,
+				_get_method,
+				_set_method;
+
+		majorversion = 1;
+		minorversion = 3;
+
+		metaclass = M_uptime;
+
+		dllname = "UPTIME.DLL";
+
+		wpSetup			: override;
+		wpInitData		: override;
+		wpAddObjectWindowPage	: override;
+		wpAddSettingsPages	: override;
+		wpMenuItemSelected	: override;
+		wpMenuItemHelpSelected	: override;
+		wpModifyMenu		: override;
+		wpSaveState		: override;
+		wpRestoreState		: override;
+		wpOpen			: override;
+	};
+	#endif
+};
+
+//#
+//# End of file: uptime.idl
+//#
+
+

@@ -1,0 +1,85 @@
+Uptime - a simple WPS class
+===========================
+
+Introduction
+------------
+
+The accompanying files implement a Workplace Shell class that shows the
+current system uptime (time since boot).  Although there are several
+utilities that do this, it seemed nice to make it a WPS class; it is
+easy to move the information around the desktop, make shadows, etc.  It
+would of course be rare to need more than one instance of this! Also,
+this is dedicated to just one function, unlike (for example) PM Patrol. 
+
+This is version 1.3, which contains facilities to select the method by
+which the uptime is determined.
+
+
+Installation
+------------
+
+Unpack the ZIP file (if you are reading this, you've probably done that
+already).  Copy UPTIME.DLL to somewhere on the LIBPATH, and UPTIME.HLP
+to somewhere on the HELP path (apart from '.', which isn't relevant
+here). Leave the UPTIME.SYS device driver for now, and read the help text
+about it once the class is working with the default uptime method.
+
+Edit the REG.CMD file, and add the full path of the location of the
+UPTIME.DLL file to the line currently containing just the UPTIME.DLL
+name.  This shouldn't be necessary, but in my experience it works
+better!
+
+Run the REG.CMD file to register the object class.
+
+Now run the CREATE.CMD file to create an instance on the desktop. 
+Answer the questions.  The refresh interval defines the frequency with
+which the display is updated.  This can always be changed by using the
+Options page in the Properties notebook. Use T or S for the uptime method,
+unless you have already installed the device driver.
+
+That's it!
+
+Use
+---
+
+Simply double click on the object to open its Watch view.  While open,
+the object title text changes to show the system uptime.  To close,
+display the popup menu (right mouse button) and select the Close View
+menu item. 
+
+Online help is also available via the Help item on the popup menu.
+
+Uninstallation
+--------------
+
+Delete all objects of the 'uptime' class.  Run the DEREG.CMD file. 
+reboot, and delete the UPTIME.DLL and UPTIME.HLP files.  If using the
+device driver, remove its DEVICE= line from CONFIG.SYS, delete the
+driver file, and reboot. 
+
+The UPTIME.SYS device driver
+----------------------------
+
+The device driver can, if so desired, be used in isolation.  It provides
+a device named UPTIME$, which can be opened in the usual way (the same
+as a file) in any suitable programming language.  Once this is done, a
+read operation will return four bytes which make up a 32 bit value
+(least significant byte first).  This value is the system uptime in
+seconds (more accurately, it is the time since the device driver
+initialised). 
+
+Revision history
+----------------
+1.0	Initial version.
+1.1	Changed to use IRQ0 timer instead of swapfile date.
+1.2	Changed to use choice of timer, swapfile date or result
+	from device driver.
+1.3	Revised device driver, and added BLDLEVEL information.
+
+Feedback
+--------
+
+Feedback to:   Bob Eager    (rde@tavi.co.uk)
+
+
+

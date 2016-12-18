@@ -1,0 +1,45 @@
+/*
+ * File: uptime.rc
+ *
+ * Class for Workplace Shell uptime monitor.
+ *
+ * Main resource file
+ *
+ * Bob Eager   October 2004
+ *
+ */
+
+#include <os2.h>
+
+/* Dialog windows */
+
+#include <wpabs.h>
+
+#include "resource.h"
+#include "dialog.h"
+rcinclude dialog.dlg
+
+/* Icons */
+
+ICON	ICN_MAIN	PRELOAD	uptime.ico
+
+/* Menus */
+
+MENU ID_POPUPMENU1
+BEGIN
+	MENUITEM	SEPARATOR
+	MENUITEM	"C~lose view", IDM_CLOSEVIEW
+	MENUITEM	SEPARATOR
+	MENUITEM	"~About", IDM_ABOUT
+END
+
+MENU ID_POPUPMENU2
+BEGIN
+	MENUITEM	"~Watch", IDM_WATCH
+END
+
+/*
+ * End of file: uptime.rc
+ *
+ */
+
